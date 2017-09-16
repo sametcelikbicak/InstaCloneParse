@@ -27,7 +27,11 @@ class feedVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         getData()
     }
     
-    func getData() {
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(feedVC.getData), name: NSNotification.Name(rawValue: "newPost"), object: nil)
+    }
+    
+    @objc func getData() {
         
         let query = PFQuery(className: "Posts")
         query.addDescendingOrder("createdAt")

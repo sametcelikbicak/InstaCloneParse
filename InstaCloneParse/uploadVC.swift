@@ -14,7 +14,7 @@ class uploadVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
    
     @IBOutlet weak var postImage: UIImageView!
     @IBOutlet weak var postCommentText: UITextView!
-    
+    @IBOutlet weak var postButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +26,8 @@ class uploadVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         postImage.isUserInteractionEnabled = true
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(uploadVC.choosePhoto))
         postImage.addGestureRecognizer(recognizer)
+        
+        postButton.isEnabled = false
         
     }
     
@@ -46,11 +48,13 @@ class uploadVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         
         postImage.image = info[UIImagePickerControllerEditedImage] as? UIImage
         self.dismiss(animated: true, completion: nil)
-        
+        postButton.isEnabled = true
     }
     
     
     @IBAction func postButtonClicked(_ sender: Any) {
+        
+        self.postButton.isEnabled = false
         
         let object = PFObject(className: "Posts")
         let data = UIImageJPEGRepresentation(postImage.image!, 0.5)
@@ -74,6 +78,8 @@ class uploadVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
                 self.postCommentText.text = ""
                 self.postImage.image = UIImage(named: "select.png")
                 self.tabBarController?.selectedIndex = 0
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "newPost"), object: nil)
             }
             
         }
